@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>TFT Viewer</title>
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-1/css/all.css">
+		<link rel="stylesheet" href="assets/css/style.css">
+	</head>
+	<body>
+		<header class="bg-dark text-white p-2">
+			<div class="container p-2">
+				<button class="btn btn-dark btn-sm float-right" id="logout">Logout</button>
+				<img class="img-fluid" src="assets/img/Logo.png" alt="logo">
+				<div class="row text-center justify-content-center mt-2">
+					<div class = "col-sm-4 mb-2">
+						<a class="btn btn-secondary w-75" href="index.html">TFT</a>
+					</div>
+					<div class = "col-sm-4">
+						<a class="btn btn-secondary w-75" href="ranked.html">Solo/Duo</a>
+					</div>
+				</div>
+			</div>
+		</header>
+		
+		<div class="container">
+			<div class="row">
+				<div class="col-md-4 mt-3">
+				<form id="searchUser">
+					<div class="bg-light border rounded-top">
+						<div class="text-muted p-2">
+							Search a player
+						</div>
+					</div>
+					<div class="bg-white border-left border-right">
+						<div class="p-2">
+							<input type="text" class="form-control mt-2" id="user" placeholder="Username" required>
+							<select id="selectRegion" class="form-control mt-2" required>
+								 <option value="0" selected disabled>Select region</option>
+								 <option value="br1">Brazil</option>
+								 <option value="eun1">EU Nordic and East</option>
+								 <option value="euw1">EU West</option>
+								 <option value="jp1">Japan</option>
+								 <option value="kr">Korea</option>
+								 <option value="la1">Latin America North</option>
+								 <option value="la2">Latin America South</option>
+								 <option value="na1">North America</option>
+								 <option value="oc1">Oceania</option>
+								 <option value="ru">Russia</option>
+								 <option value="tr1">Turkey</option>
+							</select>
+							<div class="p-1 m-1 text-danger small" id="errMessage">
+								   &nbsp;
+							</div>
+						</div>
+					</div>
+					<div class="bg-light border rounded-bottom p-2 text-right">
+					 	<button type ="submit" class="btn btn-primary"><i class="fa fa-search mr-1"></i>Search</button>
+					</div>
+				</form>
+				</div>
+				<div class="col-md-8 mt-3">
+					<div class="bg-light border rounded-top">
+						<div class="text-muted p-2 mb-1">
+							Teamfight Tactics statistics
+							<div class="float-right">
+								<button class="btn btn-secondary btn-sm" id="changeView" data-toggle="tooltip" title="Change view"><i class="fa fa-image"></i></button>
+							</div>
+						</div>
+					</div>
+					<div class="bg-white border rounded-bottom border-top-0 p-3">
+						<div class="row p-2 text-center font-weight-bold" id="catalogDisplay">
+							<div class="col-lg-4 col-sm-6 card p-2 bg-light" id="catalogClone">
+								<div id="summonerRegion">
+									Region								
+								</div>
+								<div id="summonerName">
+									Summoner Name								
+								</div>
+								<img class="img-fluid float-center w-50 m-3" id="summonerEmblem" src="assets/img/Emblem_Challenger.png" alt="emblem">
+								<div id = "summonerRank">
+									<span id="rank">RANK</span>&nbsp;<span id="division">DIV</span>							
+								</div>
+								<div id ="summonerWins">
+									<span id="wins">W</span>&nbsp;Wins&nbsp;<span id="lp">LP</span>LP							
+								</div>
+								<div class= "text-center mt-1 p-1">
+									<button id="update" type="button" class="btn btn-primary btn-sm">Update</button>
+									<button id="delete" type="button" class="btn btn-danger btn-sm">Delete</button>
+								</div>
+							</div>
+						</div>
+						<div class="row p-2  font-weight-bold" id="listDisplay">
+							<div class="border-bottom w-100 m-2" id="listClone">
+								<span class="mr-2 text-secondary" id="summonerRegion ">Region</span> <span class="mr-2" id="summonerName">Summoner Name</span><div class="d-inline-block"><span class="text-secondary"><span id="rank">RANK</span>&nbsp;<span id="division">DIV</span>&nbsp;<span id="lp">LP</span>LP</span><button id="update" type="button" class="btn btn-sm text-primary m-1"><i class="fa fa-redo-alt"></i></button>&nbsp;<button id="delete" type="button" class="btn btn-sm text-danger m-1"><i class="fa fa-times"></i></button></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script>
+		var apiKey = "RGAPI-638f956a-353c-4701-903b-c59cd6cf6305";
+		
+		function convertIntoRegionId(region) {
+			switch (region) {
+				case "Brazil":
+					return "br1";
+	  	 	 	break;
+				case "EU Nordic and East":
+					return "eun1";
+	  	 	 	break;
+				case "EU West":
+					return "euw1";
+	  	 	 	break;
+				case "Japan":
+					return "jp1";
+	  	 	 	break;
+				case "Korea":
+					return "k1";
+	  	 	 	break;
+				case "Latin America North":
+					return "la1";
+	  	 	 	break;
+				case "Latin America South":
+					return "la2";
+	  	 	 	break;
+				case "North America":
+					return "na1";
+	  	 	 	break;
+				case "Oceania":
+					return "oc1";
+	  	 	 	break;
+				case "Russia":
+					return "ru";
+	  	 	 	break;
+				case "Turkey":
+					return "tr1";
+	  	 	 	break;
+				default:
+					return "0";
+			}
+		}
+		
+		function getEmblem(clone, rank){
+			
+			var emblem = clone.find("#summonerEmblem");
+			
+			switch (rank) {
+				case "IRON":
+					emblem.attr("src","assets/img/Emblem_Iron.png");
+			    break;
+				case "BRONZE":
+					emblem.attr("src","assets/img/Emblem_Bronze.png");
+			    break;
+				case "SILVER":
+					emblem.attr("src","assets/img/Emblem_Silver.png");
+			    break;
+				case "GOLD":
+					emblem.attr("src","assets/img/Emblem_Gold.png");
+			    break;
+				case "PLATINUM":
+					emblem.attr("src","assets/img/Emblem_Platinum.png");
+			    break;
+				case "DIAMOND":
+					emblem.attr("src","assets/img/Emblem_Diamond.png");
+			    break;
+				case "MASTER":
+					emblem.attr("src","assets/img/Emblem_Master.png");
+			    break;
+				case "GRANDMASTER":
+					emblem.attr("src","assets/img/Emblem_Grandmaster.png");
+			    break;
+				case "CHALLENGER":
+					emblem.attr("src","assets/img/Emblem_Challenger.png");
+			    break;
+				default:
+					emblem.attr("src","assets/img/Emblem_Challenger.png");
+			}
+		}
+		
+		function drawTFTStats (clone ,resp){
+			
+			clone.find("#summonerRegion").html(resp.summonerRegion);
+			clone.find("#summonerName").html(resp.summonerName);
+			clone.find("#rank").html(resp.rank);
+			clone.find("#division").html(resp.division);
+			clone.find("#wins").html(resp.wins);
+			clone.find("#lp").html(resp.lp);
+			
+		}
+		
+		function catalogClone(resp){
+			
+			var clone = $("#catalogClone").clone();
+			
+			clone.attr("id", resp.id + "catalog");
+			
+			drawTFTStats(clone ,resp);
+		
+			getEmblem(clone, resp.rank);
+			
+			clone.find("#update").click(function() {
+				updateTFTStats(resp.id);
+			});
+			clone.find("#delete").click(function() {
+				deleteTFTStats(resp.id);
+			});
+			
+			clone.css("display", "block");
+			
+			$("#catalogDisplay").append(clone);
+		}	
+
+		function listClone(resp){
+			
+			var clone = $("#listClone").clone();
+			
+			clone.attr("id", resp.id + "list");
+			
+			drawTFTStats(clone ,resp);
+			
+			clone.find("#update").click(function() {
+				updateTFTStats(resp.id);
+			});
+			clone.find("#delete").click(function() {
+				deleteTFTStats(resp.id);
+			});
+			
+			clone.css("display", "block");
+			
+			$("#listDisplay").append(clone);
+		}
+		
+		function addTFTStats(data) {
+			$.ajax({
+				url: "tftstats/add",
+				method: "POST",
+				data: {
+					summonerRegion : $("#selectRegion").find(":selected").text(),
+					summonerName : data[0].summonerName,
+					rank : data[0].tier,
+					division : data[0].rank, 
+					wins : data[0].wins,
+					lp : data[0].leaguePoints
+				},
+				success: function (resp) {
+					if (resp.id != 0) {
+						catalogClone(resp);
+						listClone(resp);
+					} else {
+						$("#errMessage").html("Stats for this player already exist");
+					}
+				},
+				fail: function () {
+					$("#errMessage").html("An error has occurred");
+				}
+			});
+		}
+		
+		function updateTFTStats(id) {
+			
+			var catalog = $("#" + id + "catalog");
+			var list = $("#" + id + "list");
+			
+			var regionName = catalog.find("#summonerRegion").text();
+			var userName = catalog.find("#summonerName").text();
+			
+			var userRegion = convertIntoRegionId(regionName);
+			
+			$.ajax({
+				method: "GET",
+				url: "https://" + userRegion + ".api.riotgames.com/tft/summoner/v1/summoners/by-name/" + userName + "?api_key=" + apiKey,
+				success: function(resp){
+					var userId = resp.id;	
+					$.ajax({
+						method: "GET",
+						url: "https://" + userRegion + ".api.riotgames.com/tft/league/v1/entries/by-summoner/" + userId + "?api_key=" + apiKey,
+						success: function(resp){
+							if (jQuery.isEmptyObject(resp))
+						    {
+								$("#errMessage").html("This player does not have TFT information");
+						    } else {										    	
+						    	$.ajax({
+									url: "tftstats/update",
+									method: "PUT",
+									data: {
+										id : id,
+										summonerRegion : regionName,
+										summonerName : resp[0].summonerName,
+										rank : resp[0].tier,
+										division : resp[0].rank, 
+										wins : resp[0].wins,
+										lp : resp[0].leaguePoints
+									},
+									success: function (resp) {
+										if (resp.id != 0) {
+											drawTFTStats(catalog ,resp);
+											getEmblem(catalog ,resp.rank);
+											drawTFTStats(list ,resp);
+											alert("Updated");
+											
+										} else {
+											alert("Please log into your account");
+											window.location.href = "login.html";
+										}
+									},
+									fail: function () {
+										$("#errMessage").html("Something went wrong");
+									}
+								});
+						    }
+						},
+						error: function(){
+							$("#errMessage").html("Failed to get TFT information from the server");
+						}						
+					})
+				},
+				error: function(){
+					$("#errMessage").html("Cannot find a user with this name in this region");
+				}
+			})
+		}
+		
+		function deleteTFTStats(id) {
+			$.ajax({
+				url: "tftstats/delete",
+				method: "DELETE",
+				data: {
+					id : id
+				},
+				success: function(resp){
+					switch(resp) {
+					case 0:
+						$("#" + id + "catalog").remove();
+						$("#" + id + "list").remove();
+				    	break;
+				  	case 1:
+				  		alert("Please log into your account");
+						window.location.href = "login.html";	
+				    	break;
+				  	case 2:
+					  	$("#errMessage").html("Failed to find stats");	
+				    	break;
+				 	default:
+					  	$("#errMessage").html("Something went wrong");	
+					} 
+				},
+				fail: function(){
+					$("#errMessage").html("Failed to delete TFT Stats");
+				}
+			});
+		}
+		
+		function getTFTStats() {
+			$.ajax({
+				url: "tftstats/get",
+				method: "GET",
+				success: function(data) {	
+					data.forEach(function(obj) {
+						catalogClone(obj);
+						listClone(obj);
+					});
+				},
+				fail: function(err) {
+					$("#errMessage").html("Failed to load TFT Stats");
+				}
+			});
+		}
+
+		function getId() {
+			$.ajax({
+				url: "user/getId",
+				method: "GET",
+				success: function(resp) {
+					if (resp != "0"){
+						getTFTStats();
+					} else {
+						alert("Please log into your account");
+						window.location.href = "login.html";
+					}
+				},
+				fail: function() {
+					alert("Please log into your account");
+					window.location.href = "login.html";
+				}
+			});
+		}
+		
+		$(document).ready(function(){
+			
+			getId();
+			
+			$("#logout").click(function() {				
+				$.ajax({
+					method: "POST",
+					url: "user/logout",
+					complete: function(resp) {
+						if (resp.status === 200) {
+							window.location.href = "login.html";
+						} else {
+							alert("An error has occurred, logout has failed");
+						}
+					}
+				})
+			});
+			var viewIndex = 0;
+						
+			$( "#changeView" ).click(function() {
+				if (viewIndex == 0) {
+					viewIndex++;
+					$("#catalogDisplay").css("display","none")
+				    $("#listDisplay").css("display"," block")
+				} else {
+					viewIndex = 0;
+					$("#catalogDisplay").css("display","flex")
+				    $("#listDisplay").css("display","none")
+				}
+			});
+			
+			$("#searchUser").on("submit",function(e){
+				e.preventDefault();
+				
+				$("#errMessage").html("&nbsp;");
+				
+				var userName = $("#user").val();
+				var userRegion = $("#selectRegion").val();
+				
+				$.ajax({
+					method: "GET",
+					url: "https://" + userRegion + ".api.riotgames.com/tft/summoner/v1/summoners/by-name/" + userName + "?api_key=" + apiKey,
+					success: function(resp){
+						var userId = resp.id;	
+						$.ajax({
+							method: "GET",
+							url: "https://" + userRegion + ".api.riotgames.com/tft/league/v1/entries/by-summoner/" + userId + "?api_key=" + apiKey,
+							success: function(resp){
+								if (jQuery.isEmptyObject(resp))
+							    {
+									$("#errMessage").html("This player does not have TFT information");
+							    } else {										    	
+							    	addTFTStats(resp);
+							    }
+							},
+							error: function(){
+								$("#errMessage").html("Failed to get TFT information from the server");
+							}						
+						})
+					},
+					error: function(){
+						$("#errMessage").html("Cannot find a user with this name in this region");
+					}
+				})
+			});
+		});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>TFT Viewer</title>
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="assets/css/style.css">
+	</head>
+	<body>
+		<header class="bg-dark p-2">
+			<div class="container p-2">
+				<div class="display-4 text-white">
+					<img src="assets/img/Logo.png" alt="logo">
+				</div>
+			</div>
+		</header>
+		
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-4 mt-3 ">
+				<form id="login-form" action="user/login" method="post">
+					<div class="bg-light border rounded-top">
+						<div class="text-muted p-2">
+							Login
+						</div>
+					</div>
+					<div class="bg-white border-left border-right">
+						<div class="p-2">
+							<input type="text" class="form-control mt-2" id="username" name="username" placeholder="Username" required>
+							<input type="password" class="form-control mt-2" id="password" name ="password" placeholder="password" required>
+							<div class="p-1 m-1 text-danger small" id="errMessageLogin">
+								   &nbsp;
+							</div>
+							<div class="p-1 m-1 text-center small">
+								<a href="register.html">Don't have an account?</a>
+							</div>
+							<input type="hidden" value="login" name="router"/>
+						</div>
+					</div>
+					<div class="bg-light border rounded-bottom p-2 text-right">
+					 	<button type ="submit" class="btn btn-primary">Login</button>
+					</div>
+				</form>
+				</div>
+			</div>
+		</div>
+		
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script>
+		
+		$("#login-form").submit(function(e){
+			e.preventDefault();
+			
+			$.ajax({
+				url:"user/login",
+				method: "POST",
+				data:{
+					username : $("#username").val(),
+					password : $("#password").val()
+				},
+				success:function(data){
+					switch(data) {
+					case 0:
+						window.location.replace("index.html");
+				    	break;
+				  	case 1:
+					  	$("#errMessageLogin").html("Wrong username or password");	
+				    	break;
+				 	default:
+					  	$("#errMessageLogin").html("Something went wrong");	
+					} 
+				},
+				fail:function(){
+					$("#errMessageLogin").html("Something went wrong");	
+				}				
+			});			
+		});
+		</script>
+	</body>
+</html>

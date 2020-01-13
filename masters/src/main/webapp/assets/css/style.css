@@ -1,0 +1,17 @@
+body {
+	background-color: WhiteSmoke;
+}
+#catalogDisplay {
+	display: ;
+	font-size: 1.2em;
+}
+#listDisplay {
+	display: none;
+	font-size: 0.8em;
+}
+#catalogClone {
+	display: none;
+}
+#listClone {
+	display: none;
+}

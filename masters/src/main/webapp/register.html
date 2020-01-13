@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>TFT Viewer</title>
+		
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+		<link rel="stylesheet" href="assets/css/style.css">
+	</head>
+	<body>
+		<header class="bg-dark p-2">
+			<div class="container p-2">
+				<div class="display-4 text-white">
+					<img src="assets/img/Logo.png" alt="logo">
+				</div>
+			</div>
+		</header>
+		
+		<div class="container">
+			<div class="row justify-content-center">
+				<div class="col-md-4 mt-3">
+				<form id="register-form" action="user/register" method="post">
+					<div class="bg-light border rounded-top">
+						<div class="text-muted p-2">
+							Register
+						</div>
+					</div>
+					<div class="bg-white border-left border-right">
+						<div class="p-2">
+							<input type="text" class="form-control mt-2" id="user" name="user" placeholder="Username" required>
+							<input type="email" class="form-control mt-2" id="email" name="email" placeholder="Email" required>
+							<input type="password" class="form-control mt-2" id="pass" name="pass" placeholder="Password" required>
+							<input type="password" class="form-control mt-2" id="repeatPass" name="repeatPass" placeholder="Repeat password" required>
+							<div class="p-1 m-1 text-danger small" id="errMessageRegister">
+								   &nbsp;
+							</div>
+							<div class="p-1 m-1 text-center small">
+								<a href="login.html">Already have an account?</a>
+							</div>
+							<input type="hidden" value="register" name="router"/>
+						</div>
+					</div>
+					<div class="bg-light border rounded-bottom p-2 text-right">
+					 	<button type ="submit" class="btn btn-primary">Register</button>
+					</div>
+				</form>
+				</div>
+			</div>
+		</div>
+		
+		<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+		<script>
+		
+		$("#register-form").submit(function(e){			
+			e.preventDefault();
+			
+			$.ajax({
+				url:"user/register",
+				method: "POST",
+				data:{
+					user : $("#user").val(),
+					pass : $("#pass").val(),
+					repeatPass : $("#repeatPass").val(),
+					email : $("#email").val()
+				},
+				success:function(data){
+					switch(data) {
+						case 0:
+							alert("Registration successful, you may now log into your account");
+							window.location.href = "login.html";	
+					    	break;
+					  	case 1:
+					  		$("#errMessageRegister").html("Username already taken");		
+					    	break;
+					  	case 2:
+					  		$("#errMessageRegister").html("There is already an account with this email");	
+					    	break;
+					  	case 3:
+					  		$("#errMessageRegister").html("Password does not match");	
+					    	break;
+					  	case 4:
+					  		$("#errMessageRegister").html("Password must be between 6 and 20 symbols long");	
+					    	break;
+					  	case 5:
+					  		$("#errMessageRegister").html("Username must be between 4 and 20 symbols long");	
+					    	break;
+					 	default:
+					 		$("#errMessageRegister").html("Something went wrong");	
+					} 
+				},
+				fail:function(){
+					$("#errMessageRegister").html("Something went wrong");
+				}			
+			});
+		});
+		</script>
+	</body>
+</html>
