@@ -10,3 +10,10 @@ Can display information for Ranked eamFight Tactics and Ranked Summoner's Rift S
 
 
 Created using Spring with H2 dataabase
+
+
+Notes:
+
+The API key provided by Riot Games lasts only for 24 hours, a new Riot Games API key is needed for the application to work properly;
+
+Access-Control-Allow-Origin is missing from Riot Games API response header and needs to be added seperately (Example: Using a browser plugin).
